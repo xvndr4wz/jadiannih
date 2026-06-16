@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diary Cinta Kita 💕</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Quicksand:wght@400;600;700&family=Caveat:wght@600;700&display=swap');
+
+  :root{
+    --cream:#FFF6EE;
+    --pink-soft:#FFD1DC;
+    --pink-deep:#FF8FAB;
+    --choco:#5C4033;
+    --butter:#FFE17D;
+    --paper:#FFFDF9;
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background:var(--cream);
+    font-family:'Quicksand', sans-serif;
+    color:var(--choco);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  /* bintang kecil ambient */
+  .sky{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+  }
+  .star{
+    position:absolute;
+    width:6px;
+    height:6px;
+    background:var(--butter);
+    border-radius:50%;
+    opacity:.55;
+    animation:twinkle 2.6s ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{ opacity:.15; transform:scale(.7); }
+    50%{ opacity:.8; transform:scale(1.15); }
+  }
+
+  .card{
+    position:relative;
+    z-index:1;
+    background:var(--paper);
+    border-radius:28px;
+    max-width:560px;
+    width:100%;
+    padding:38px 32px 30px;
+    box-shadow:0 18px 40px -12px rgba(92,64,51,.25);
+    border:3px solid var(--pink-soft);
+  }
+
+  /* washi tape pojok */
+  .tape{
+    position:absolute;
+    width:90px;
+    height:34px;
+    background:repeating-linear-gradient(45deg, var(--pink-deep) 0 8px, var(--pink-soft) 8px 16px);
+    opacity:.9;
+    border-radius:3px;
+    box-shadow:0 3px 6px rgba(0,0,0,.1);
+  }
+  .tape.left{ top:-16px; left:18px; transform:rotate(-8deg); }
+  .tape.right{ top:-14px; right:18px; transform:rotate(7deg); }
+
+  .eyebrow{
+    text-align:center;
+    font-family:'Caveat', cursive;
+    font-size:1.4rem;
+    color:var(--pink-deep);
+    margin:6px 0 0;
+    font-weight:700;
+  }
+
+  h1{
+    font-family:'Baloo 2', cursive;
+    text-align:center;
+    font-size:1.7rem;
+    margin:4px 0 2px;
+    color:var(--choco);
+  }
+
+  .since{
+    text-align:center;
+    font-size:.92rem;
+    color:#8a6a55;
+    margin-bottom:20px;
+  }
+
+  .since b{ color:var(--pink-deep); }
+
+  /* karakter kucing oren lucu, signature element */
+  .cat-wrap{
+    display:flex;
+    justify-content:center;
+    margin:6px 0 14px;
+  }
+  .cat{
+    position:relative;
+    width:64px;
+    height:54px;
+    animation:bob 1s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{ transform:translateY(0) rotate(0deg); }
+    50%{ transform:translateY(-5px) rotate(-3deg); }
+  }
+  .cat .head{
+    position:absolute;
+    bottom:0; left:7px;
+    width:50px; height:42px;
+    background:#FFB069;
+    border-radius:50% 50% 46% 46%;
+  }
+  .cat .ear{
+    position:absolute;
+    width:0; height:0;
+    border-left:11px solid transparent;
+    border-right:11px solid transparent;
+    border-bottom:18px solid #FFB069;
+  }
+  .cat .ear.l{ top:-8px; left:8px; transform:rotate(-18deg); }
+  .cat .ear.r{ top:-8px; right:8px; transform:rotate(18deg); }
+  .cat .eye{
+    position:absolute;
+    top:20px;
+    width:6px; height:8px;
+    background:var(--choco);
+    border-radius:50%;
+    animation:blink 3.4s infinite;
+  }
+  .cat .eye.l{ left:18px; }
+  .cat .eye.r{ left:34px; }
+  @keyframes blink{
+    0%,92%,100%{ transform:scaleY(1); }
+    95%{ transform:scaleY(.1); }
+  }
+  .cat .nose{
+    position:absolute;
+    top:27px; left:27px;
+    width:5px; height:4px;
+    background:var(--pink-deep);
+    border-radius:50%;
+  }
+  .cat .blush{
+    position:absolute;
+    top:25px;
+    width:7px; height:5px;
+    background:var(--pink-soft);
+    border-radius:50%;
+    opacity:.8;
+  }
+  .cat .blush.l{ left:10px; }
+  .cat .blush.r{ left:44px; }
+
+  .timer-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:10px;
+    margin:6px 0 18px;
+  }
+  .unit{
+    background:var(--cream);
+    border:2px dashed var(--pink-soft);
+    border-radius:16px;
+    padding:12px 4px;
+    text-align:center;
+  }
+  .unit .num{
+    font-family:'Baloo 2', cursive;
+    font-size:1.9rem;
+    color:var(--choco);
+    line-height:1;
+    transition:transform .15s ease;
+  }
+  .unit .num.pulse{ transform:scale(1.18); color:var(--pink-deep); }
+  .unit .label{
+    font-size:.66rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:#a4806a;
+    margin-top:5px;
+    font-weight:700;
+  }
+
+  .footnote{
+    text-align:center;
+    font-family:'Caveat', cursive;
+    font-size:1.25rem;
+    color:var(--pink-deep);
+    margin-top:4px;
+  }
+
+  .heart-divider{
+    text-align:center;
+    color:var(--pink-soft);
+    font-size:.9rem;
+    margin:14px 0;
+    letter-spacing:8px;
+  }
+
+  @media (max-width:380px){
+    .timer-grid{ grid-template-columns:repeat(2,1fr); }
+    .unit .num{ font-size:1.6rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .cat, .star, .eye{ animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sky" id="sky"></div>
+
+<div class="card">
+  <div class="tape left"></div>
+  <div class="tape right"></div>
+
+  <p class="eyebrow">halaman rahasia kita berdua~</p>
+  <h1>Sudah Sejauh Ini Kita Jalan 🐾</h1>
+  <p class="since">Resmi jadian sejak <b>3 Juni 2026, pukul 23:30</b></p>
+
+  <div class="cat-wrap">
+    <div class="cat">
+      <div class="ear l"></div>
+      <div class="ear r"></div>
+      <div class="head"></div>
+      <div class="blush l"></div>
+      <div class="blush r"></div>
+      <div class="eye l"></div>
+      <div class="eye r"></div>
+      <div class="nose"></div>
+    </div>
+  </div>
+
+  <div class="timer-grid">
+    <div class="unit">
+      <div class="num" id="days">0</div>
+      <div class="label">Hari</div>
+    </div>
+    <div class="unit">
+      <div class="num" id="hours">0</div>
+      <div class="label">Jam</div>
+    </div>
+    <div class="unit">
+      <div class="num" id="minutes">0</div>
+      <div class="label">Menit</div>
+    </div>
+    <div class="unit">
+      <div class="num" id="seconds">0</div>
+      <div class="label">Detik</div>
+    </div>
+  </div>
+
+  <div class="heart-divider">♡ ♡ ♡</div>
+
+  <p class="footnote">tiap detik yang lewat, makin sayang sama kamu :)</p>
+</div>
+
+<script>
+  // bintang ambient
+  const sky = document.getElementById('sky');
+  for(let i=0;i<22;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random()*100+'vw';
+    s.style.top = Math.random()*100+'vh';
+    s.style.animationDelay = (Math.random()*2.6)+'s';
+    sky.appendChild(s);
+  }
+
+  const startDate = new Date(2026, 5, 3, 23, 30, 0); // bulan 0-index: 5 = Juni
+
+  const daysEl = document.getElementById('days');
+  const hoursEl = document.getElementById('hours');
+  const minutesEl = document.getElementById('minutes');
+  const secondsEl = document.getElementById('seconds');
+
+  let lastSecond = null;
+
+  function pulse(el){
+    el.classList.add('pulse');
+    setTimeout(()=> el.classList.remove('pulse'), 180);
+  }
+
+  function update(){
+    const now = new Date();
+    let diff = now - startDate;
+    if(diff < 0) diff = 0;
+
+    const totalSeconds = Math.floor(diff/1000);
+    const days = Math.floor(totalSeconds/86400);
+    const hours = Math.floor((totalSeconds%86400)/3600);
+    const minutes = Math.floor((totalSeconds%3600)/60);
+    const seconds = totalSeconds%60;
+
+    daysEl.textContent = days;
+    hoursEl.textContent = hours;
+    minutesEl.textContent = minutes;
+    secondsEl.textContent = seconds;
+
+    if(seconds !== lastSecond){
+      pulse(secondsEl);
+      lastSecond = seconds;
+    }
+  }
+
+  update();
+  setInterval(update, 1000);
+</script>
+
+</body>
+</html>
