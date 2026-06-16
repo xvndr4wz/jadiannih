@@ -170,32 +170,37 @@
 
   .timer-grid{
     display:grid;
-    grid-template-columns:repeat(4, 1fr);
-    gap:10px;
+    grid-template-columns:repeat(5, 1fr);
+    gap:8px;
     margin:6px 0 18px;
   }
   .unit{
     background:var(--cream);
     border:2px dashed var(--pink-soft);
     border-radius:16px;
-    padding:12px 4px;
+    padding:10px 2px;
     text-align:center;
   }
   .unit .num{
     font-family:'Baloo 2', cursive;
-    font-size:1.9rem;
+    font-size:1.5rem;
     color:var(--choco);
     line-height:1;
     transition:transform .15s ease;
   }
-  .unit .num.pulse{ transform:scale(1.18); color:var(--pink-deep); }
+  .unit .num.pulse{ transform:scale(1.22); color:var(--pink-deep); }
   .unit .label{
-    font-size:.66rem;
+    font-size:.58rem;
     text-transform:uppercase;
-    letter-spacing:.06em;
+    letter-spacing:.04em;
     color:#a4806a;
     margin-top:5px;
     font-weight:700;
+  }
+  .unit .emoji{
+    font-size:.85rem;
+    margin-top:2px;
+    display:block;
   }
 
   .footnote{
@@ -204,6 +209,44 @@
     font-size:1.25rem;
     color:var(--pink-deep);
     margin-top:4px;
+    min-height:1.6rem;
+    transition:opacity .3s ease;
+  }
+
+  .love-meter{
+    margin:4px 0 16px;
+  }
+  .love-meter-label{
+    font-size:.7rem;
+    font-weight:700;
+    color:#a4806a;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:6px;
+    text-align:center;
+  }
+  .love-meter-bar{
+    height:14px;
+    background:var(--cream);
+    border:2px solid var(--pink-soft);
+    border-radius:20px;
+    overflow:hidden;
+    position:relative;
+  }
+  .love-meter-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--butter), var(--pink-deep));
+    border-radius:20px;
+    transition:width .6s ease;
+    position:relative;
+  }
+  .love-meter-fill::after{
+    content:'💗';
+    position:absolute;
+    right:-2px;
+    top:-7px;
+    font-size:.8rem;
   }
 
   .heart-divider{
@@ -214,9 +257,12 @@
     letter-spacing:8px;
   }
 
+  @media (max-width:420px){
+    .timer-grid{ grid-template-columns:repeat(3,1fr); }
+    .unit{ margin-bottom:2px; }
+  }
   @media (max-width:380px){
-    .timer-grid{ grid-template-columns:repeat(2,1fr); }
-    .unit .num{ font-size:1.6rem; }
+    .unit .num{ font-size:1.3rem; }
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -251,21 +297,35 @@
 
   <div class="timer-grid">
     <div class="unit">
+      <div class="num" id="months">0</div>
+      <div class="label">Bulan</div>
+      <span class="emoji">🌙</span>
+    </div>
+    <div class="unit">
       <div class="num" id="days">0</div>
       <div class="label">Hari</div>
+      <span class="emoji">☀️</span>
     </div>
     <div class="unit">
       <div class="num" id="hours">0</div>
       <div class="label">Jam</div>
+      <span class="emoji">⏰</span>
     </div>
     <div class="unit">
       <div class="num" id="minutes">0</div>
       <div class="label">Menit</div>
+      <span class="emoji">🍬</span>
     </div>
     <div class="unit">
       <div class="num" id="seconds">0</div>
       <div class="label">Detik</div>
+      <span class="emoji">💓</span>
     </div>
+  </div>
+
+  <div class="love-meter">
+    <div class="love-meter-label">Level Baper</div>
+    <div class="love-meter-bar"><div class="love-meter-fill" id="loveFill"></div></div>
   </div>
 
   <div class="heart-divider">♡ ♡ ♡</div>
@@ -287,10 +347,33 @@
 
   const startDate = new Date(2026, 5, 3, 23, 30, 0); // bulan 0-index: 5 = Juni
 
+  const monthsEl = document.getElementById('months');
   const daysEl = document.getElementById('days');
   const hoursEl = document.getElementById('hours');
   const minutesEl = document.getElementById('minutes');
   const secondsEl = document.getElementById('seconds');
+  const loveFill = document.getElementById('loveFill');
+  const footnote = document.querySelector('.footnote');
+
+  const messages = [
+    "tiap detik yang lewat, makin sayang sama kamu :)",
+    "kucing oren ini ikutan baper liatin angka di atas",
+    "psst, cinta kita masih jalan terus nih, gak ada loading...",
+    "udah segini lama, tapi masih betah aja gemesin kamu",
+    "detik berganti, sayangnya gak pernah berkurang",
+    "kalau kangen jadi satuan waktu, ini pasti udah overflow"
+  ];
+  let msgIndex = 0;
+
+  function rotateMessage(){
+    footnote.style.opacity = 0;
+    setTimeout(()=>{
+      msgIndex = (msgIndex + 1) % messages.length;
+      footnote.textContent = messages[msgIndex];
+      footnote.style.opacity = 1;
+    }, 300);
+  }
+  setInterval(rotateMessage, 4000);
 
   let lastSecond = null;
 
@@ -299,21 +382,46 @@
     setTimeout(()=> el.classList.remove('pulse'), 180);
   }
 
+  // hitung selisih kalender asli: bulan & hari (bukan dibagi rata 30 hari)
+  function calendarDiff(start, now){
+    let months = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+    // tanggal acuan: tanggal start di bulan "months" setelah start
+    let anchor = new Date(start.getFullYear(), start.getMonth() + months, start.getDate(),
+                           start.getHours(), start.getMinutes(), start.getSeconds());
+    if(anchor > now){
+      months -= 1;
+      anchor = new Date(start.getFullYear(), start.getMonth() + months, start.getDate(),
+                         start.getHours(), start.getMinutes(), start.getSeconds());
+    }
+    const remainderMs = now - anchor; // sisa setelah dikurangi bulan penuh
+    return { months, remainderMs };
+  }
+
   function update(){
     const now = new Date();
-    let diff = now - startDate;
-    if(diff < 0) diff = 0;
+    let totalDiff = now - startDate;
+    if(totalDiff < 0) totalDiff = 0;
 
-    const totalSeconds = Math.floor(diff/1000);
+    const { months, remainderMs } = calendarDiff(startDate, now);
+    const safeRemainder = Math.max(remainderMs, 0);
+
+    const totalSeconds = Math.floor(safeRemainder/1000);
     const days = Math.floor(totalSeconds/86400);
     const hours = Math.floor((totalSeconds%86400)/3600);
     const minutes = Math.floor((totalSeconds%3600)/60);
     const seconds = totalSeconds%60;
 
+    monthsEl.textContent = months;
     daysEl.textContent = days;
     hoursEl.textContent = hours;
     minutesEl.textContent = minutes;
     secondsEl.textContent = seconds;
+
+    // love meter: progres dalam bulan ke-12 (siklus tahunan), cuma buat gemoy-gemoy aja
+    const cycleMonth = months % 12;
+    const dayProgress = days / 30;
+    const fillPercent = Math.min(((cycleMonth + dayProgress) / 12) * 100, 100);
+    loveFill.style.width = fillPercent + '%';
 
     if(seconds !== lastSecond){
       pulse(secondsEl);
@@ -326,4 +434,5 @@
 </script>
 
 </body>
-</html>
+    </html>
+        
